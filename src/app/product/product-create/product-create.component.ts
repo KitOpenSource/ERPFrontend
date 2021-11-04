@@ -35,7 +35,7 @@ export class ProductCreateComponent implements OnInit {
     'Israel', 'Italy',
     'Japan',
     'Laos', 'Latvia',
-    'Macau', 'Mexico', 'Mongolia'
+    'Macau', 'Mexico', 'Mongolia',
     'Netherlands', 'New Zealand', 'Niue', 'North Korea',
     'Palau', 'Papua New Guinea', 'Poland', 'Portugal',
     'Russia', 'Rwanda',
