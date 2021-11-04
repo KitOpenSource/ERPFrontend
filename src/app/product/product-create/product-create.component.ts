@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-product-create',
@@ -7,15 +7,6 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./product-create.component.css']
 })
 export class ProductCreateComponent implements OnInit {
-
-  form: FormGroup;
-  pidControl = new FormControl('');
-  nameControl = new FormControl('');
-  cnameControl = new FormControl('');
-  categoryControl = new FormControl('');
-  subcategoryControl = new FormControl('');
-  countryControl = new FormControl('');
-  denominationControl = new FormControl('');
 
   metals = [
     { value: 'gold', checked: false},
@@ -41,8 +32,36 @@ export class ProductCreateComponent implements OnInit {
     'Russia', 'Rwanda',
     'Samoa', 'Singapore', 'Solomon Islands', 'South Africa', 'South Korea', 'Spain', 'Switzerland',
     'Togo', 'Tokelau', 'Tuvalu',
-    'Vanuatu', 'Vatican City'
-  ]
+    'Vanuatu', 'Vatican City',
+    'Other'
+  ];
+
+  manufacturers = [
+    'All Collect', 'Austrian Mint',
+    'China Gold Corp', 'CIT', 'Czech Mint',
+    'Heraeus', 'Holy Land Mint of Israel',
+    'Japan Mint',
+    'MDM', 'Mexican Mint', 'Mint Of Poland', 'MNI', 'Monnaie de Paris',
+    'New Zealand Mint',
+    'PAMP', 'Pobjoy Mint',
+    'Royal Australia Mint', 'Royal Canadian Mint', 'Royal Dutch Mint',
+    'Scottsdale Mint', 'South African Mint', 'Sunshine Mint',
+    'The Perth Mint','The Royal Mint', 'The Singapore Mint',
+    'United States Mint',
+    'Valcambi Mint',
+    'Other'
+  ];
+
+  form: FormGroup;
+  pidControl = new FormControl('');
+  nameControl = new FormControl('');
+  cnameControl = new FormControl('');
+  categoryControl = new FormControl('');
+  subcategoryControl = new FormControl('');
+  countryControl = new FormControl('');
+  denominationControl = new FormControl('');
+  manufacturerControl = new FormControl('');
+  mintageControl = new FormControl(Validators.min(10));
 
   constructor() {
     this.form = new FormGroup({
@@ -52,7 +71,9 @@ export class ProductCreateComponent implements OnInit {
       category: this.categoryControl,
       subcategory: this.subcategoryControl,
       country: this.countryControl,
-      denomination: this.denominationControl
+      denomination: this.denominationControl,
+      manufacturer: this.manufacturerControl,
+      mintage: this.mintageControl
     });
   }
 

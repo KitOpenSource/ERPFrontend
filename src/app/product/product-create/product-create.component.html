@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="product-create-card">
     <mat-card-title>New Product</mat-card-title>
     <mat-card-content>
         <form [formGroup]="form" (ngSubmit)="submit()">
@@ -54,8 +54,24 @@
             </mat-form-field>
         </p>
         <p>
+            <mat-form-field appearance="fill">
+                <mat-label>manufacturer</mat-label>
+                <mat-select [formControl]="countryControl">
+                  <mat-option *ngFor="let manufacturer of manufacturers" [value]="manufacturer">{{manufacturer}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </p>
+        <p>
             <mat-form-field>
             <input type="text" matInput placeholder="denomination" formControlName="denomination">
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="fill" >
+                <mat-label>Mintage</mat-label>
+                <input type="number" matInput placeholder="mintage" formControlName="mintage" min="1">
+                <span matSuffix>pcs</span>
+                <mat-error *ngIf="mintageControl.invalid">Min: 1 pc</mat-error>
             </mat-form-field>
         </p>
         <p *ngIf="error" class="error">
