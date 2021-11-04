@@ -30,7 +30,7 @@ export class ProductCreateComponent implements OnInit {
     'Belarus', 'Belgium', 'Bhutan', 'British Virgin Islands',
     'Cameroon', 'Canada', 'Chad', 'China', 'Cook Islands', 'Czech Republic',
     'Fiji', 'Finland', 'France',
-    'Germany', 'Gibraltar', 'Greece', 'Great Britian',
+    'Germany', 'Ghana', 'Gibraltar', 'Greece', 'Great Britian',
     'Hong Kong',
     'Israel', 'Italy',
     'Japan',
