@@ -11,8 +11,12 @@ export class ProductCreateComponent implements OnInit {
   form: FormGroup;
   pidControl = new FormControl('');
   nameControl = new FormControl('');
+  cnameControl = new FormControl('');
   categoryControl = new FormControl('');
-  
+  subcategoryControl = new FormControl('');
+  countryControl = new FormControl('');
+  denominationControl = new FormControl('');
+
   metals = [
     { value: 'gold', checked: false},
     { value: 'silver', checked: false},
@@ -21,11 +25,34 @@ export class ProductCreateComponent implements OnInit {
     { value: 'other', checked: false}
   ];
 
+  countrys = [
+    'America', 'American Samoa', 'Australia', 'Austria',
+    'Belarus', 'Belgium', 'Bhutan', 'British Virgin Islands',
+    'Cameroon', 'Canada', 'Chad', 'China', 'Cook Islands', 'Czech Republic',
+    'Fiji', 'Finland', 'France',
+    'Germany', 'Gibraltar', 'Greece', 'Great Britian',
+    'Hong Kong',
+    'Israel', 'Italy',
+    'Japan',
+    'Laos', 'Latvia',
+    'Macau', 'Mexico',
+    'Netherlands', 'New Zealand', 'Niue', 'North Korea',
+    'Palau', 'Papua New Guinea', 'Poland', 'Portugal',
+    'Russia', 'Rwanda',
+    'Samoa', 'Singapore', 'Solomon Islands', 'South Africa', 'South Korea', 'Spain', 'Switzerland',
+    'Togo', 'Tokelau', 'Tuvalu',
+    'Vanuatu', 'Vatican City'
+  ]
+
   constructor() {
     this.form = new FormGroup({
       pid: this.pidControl,
       name: this.nameControl,
-      category: this.categoryControl
+      cname: this.cnameControl,
+      category: this.categoryControl,
+      subcategory: this.subcategoryControl,
+      country: this.countryControl,
+      denomination: this.denominationControl
     });
   }
 

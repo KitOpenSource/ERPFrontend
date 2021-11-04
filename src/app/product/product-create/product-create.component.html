@@ -12,6 +12,11 @@
           <input type="text" matInput placeholder="name" formControlName="name">
           </mat-form-field>
         </p>
+        <p>
+            <mat-form-field class="example-full-width">
+            <input type="text" matInput placeholder="cname" formControlName="cname">
+            </mat-form-field>
+          </p>
         <mat-form-field appearance="fill">
           <mat-label>Category</mat-label>
           <mat-select [formControl]="categoryControl">
@@ -19,8 +24,18 @@
             <mat-option value="collectable">collectable</mat-option>
             <mat-option value="toy">toy</mat-option>
             <mat-option value="accessory">accessory</mat-option>
-            <mat-option value="accessory">other</mat-option>
+            <mat-option value="other">other</mat-option>
           </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Subcategory</mat-label>
+            <mat-select [formControl]="subcategoryControl">
+              <mat-option value="coin">coin</mat-option>
+              <mat-option value="bar">bar</mat-option>
+              <mat-option value="medal">medal</mat-option>
+              <mat-option value="note">note</mat-option>
+              <mat-option value="other">other</mat-option>
+            </mat-select>
         </mat-form-field>
         <p>Metals</p>
         <section class="example-section">
@@ -30,6 +45,19 @@
                   </mat-checkbox>
             </span>
         </section>
+        <p>
+            <mat-form-field appearance="fill">
+                <mat-label>Country</mat-label>
+                <mat-select [formControl]="countryControl">
+                  <mat-option *ngFor="let country of countrys" [value]="country">{{country}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+            <input type="text" matInput placeholder="denomination" formControlName="denomination">
+            </mat-form-field>
+        </p>
         <p *ngIf="error" class="error">
             {{ error }}
         </p>
