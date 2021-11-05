@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+
 @Component({
   selector: 'app-product-create',
   templateUrl: './product-create.component.html',
@@ -62,6 +63,15 @@ export class ProductCreateComponent implements OnInit {
   denominationControl = new FormControl('');
   manufacturerControl = new FormControl('');
   mintageControl = new FormControl(Validators.min(10));
+  diameterControl = new FormControl(Validators.min(0.1));
+  thicknessControl = new FormControl(Validators.min(0.1));
+  purityControl = new FormControl('');
+  finishControl = new FormControl('');
+  weight_auControl = new FormControl(Validators.min(0));
+  weight_agControl = new FormControl(Validators.min(0));
+  weight_ptControl = new FormControl(Validators.min(0));
+  weight_pdControl = new FormControl(Validators.min(0));
+  gross_weightControl = new FormControl(Validators.min(0));
 
   constructor() {
     this.form = new FormGroup({
@@ -73,7 +83,16 @@ export class ProductCreateComponent implements OnInit {
       country: this.countryControl,
       denomination: this.denominationControl,
       manufacturer: this.manufacturerControl,
-      mintage: this.mintageControl
+      mintage: this.mintageControl,
+      diameter: this.diameterControl,
+      thickness: this.thicknessControl,
+      purity: this.purityControl,
+      finish: this.finishControl,
+      weight_au: this.weight_auControl,
+      weight_ag: this.weight_agControl,
+      weight_pt: this.weight_ptControl,
+      weight_pd: this.weight_pdControl,
+      gross_weight: this.gross_weightControl
     });
   }
 
