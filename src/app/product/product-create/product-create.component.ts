@@ -1,11 +1,45 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import {MatDatepicker} from '@angular/material/datepicker';
+
+import * as _moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import {Moment} from 'moment';
+
+const moment = _moment;
+
+// See the Moment.js docs for the meaning of these formats:
+// https://momentjs.com/docs/#/displaying/format/
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'YYYY',
+  },
+  display: {
+    dateInput: 'YYYY',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYY',
+  },
+};
 
 @Component({
   selector: 'app-product-create',
   templateUrl: './product-create.component.html',
-  styleUrls: ['./product-create.component.css']
+  styleUrls: ['./product-create.component.css'],
+  providers: [
+    // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
+    // application's root module. We provide it at the component level here, due to limitations of
+    // our example generation script.
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  ]
 })
 export class ProductCreateComponent implements OnInit {
 
@@ -62,16 +96,17 @@ export class ProductCreateComponent implements OnInit {
   countryControl = new FormControl('');
   denominationControl = new FormControl('');
   manufacturerControl = new FormControl('');
-  mintageControl = new FormControl(Validators.min(10));
-  diameterControl = new FormControl(Validators.min(0.1));
-  thicknessControl = new FormControl(Validators.min(0.1));
+  mintageControl = new FormControl('0',Validators.min(0));
+  diameterControl = new FormControl('');
+  thicknessControl = new FormControl('');
   purityControl = new FormControl('');
   finishControl = new FormControl('');
-  weight_auControl = new FormControl(Validators.min(0));
-  weight_agControl = new FormControl(Validators.min(0));
-  weight_ptControl = new FormControl(Validators.min(0));
-  weight_pdControl = new FormControl(Validators.min(0));
-  gross_weightControl = new FormControl(Validators.min(0));
+  weight_auControl = new FormControl('0',Validators.min(0));
+  weight_agControl = new FormControl('0',Validators.min(0));
+  weight_ptControl = new FormControl('0',Validators.min(0));
+  weight_pdControl = new FormControl('0',Validators.min(0));
+  gross_weightControl = new FormControl('0',Validators.min(0));
+  date = new FormControl(moment());
 
   constructor() {
     this.form = new FormGroup({
@@ -92,7 +127,8 @@ export class ProductCreateComponent implements OnInit {
       weight_ag: this.weight_agControl,
       weight_pt: this.weight_ptControl,
       weight_pd: this.weight_pdControl,
-      gross_weight: this.gross_weightControl
+      gross_weight: this.gross_weightControl,
+      date: this.date
     });
   }
 
@@ -108,6 +144,7 @@ export class ProductCreateComponent implements OnInit {
       this.metals.forEach(metal => {
         if (metal.checked == true) this.form.value.metal.push(metal.value);
       });
+      this.form.value.year = (this.date.value as Moment).year();
       this.submitEM.emit(this.form.value);
     }
     
@@ -131,6 +168,14 @@ export class ProductCreateComponent implements OnInit {
         this.metals[4].checked = box.checked;
         break;
     }
+  }
+
+  chosenYearHandler(normalizedYear: Moment, datepicker: MatDatepicker<Moment>) {
+    const ctrlValue = this.date.value;
+    ctrlValue.year(normalizedYear.year());
+    this.date.setValue(ctrlValue);
+    console.log((ctrlValue as Moment).year());
+    datepicker.close();
   }
 }
 

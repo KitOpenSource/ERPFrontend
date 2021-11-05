@@ -37,6 +37,16 @@
             <mat-option value="other">other</mat-option>
           </mat-select>
       </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Year</mat-label>
+        <input matInput [matDatepicker]="dp" [formControl]="date">
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp
+                        startView="multi-year"
+                        (yearSelected)="chosenYearHandler($event, dp)"
+                        panelClass="example-month-picker">
+        </mat-datepicker>
+      </mat-form-field>
       <mat-divider></mat-divider>
       <p>Metals</p>
       <section class="example-section">
@@ -100,21 +110,18 @@
       <p>
           <mat-form-field>
               <mat-label>Mintage</mat-label>
-              <input type="number" matInput placeholder="mintage" formControlName="mintage" min="1">
+              <input type="number" matInput placeholder="mintage(Ex. 0 = no limited)" formControlName="mintage" min="0">
               <span matSuffix>pcs</span>
-              <mat-error *ngIf="mintageControl.invalid">Min: 1 pc</mat-error>
+              <mat-error *ngIf="mintageControl.invalid">Min: 0 pc</mat-error>
           </mat-form-field>
           <mat-form-field>
               <mat-label>Diameter</mat-label>
-              <input type="number" matInput placeholder="diameter" formControlName="diameter" min="0.1">
-              <span matSuffix>mm</span>
-              <mat-error *ngIf="diameterControl.invalid">Min: 0.1 mm</mat-error>
+              <input type="text" matInput placeholder="diameter" formControlName="diameter">
           </mat-form-field>
           <mat-form-field>
               <mat-label>Thickness</mat-label>
-              <input type="number" matInput placeholder="thickness" formControlName="thickness" min="0.1">
+              <input type="text" matInput placeholder="thickness" formControlName="thickness">
               <span matSuffix>mm</span>
-              <mat-error *ngIf="thicknessControl.invalid">Min: 0.1 mm</mat-error>
           </mat-form-field>
       </p>
       <p>
