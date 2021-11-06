@@ -15,69 +15,28 @@ import { ProductCreateComponent } from './product-create/product-create.componen
 //   category: string;
 // }
 
-var ELEMENT_DATA: Product[] = [];
-
-
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
-export class ProductComponent implements OnInit, AfterViewInit {
+export class ProductComponent implements OnInit {
 
-  displayedColumns: string[] = ['pid', 'name', 'country', 'category', 'weight'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  
   newError: string | null | undefined;
   newSuccess: string | null | undefined;
 
-  @ViewChild(MatSort)
-  sort!: MatSort;
 
-  @ViewChild(MatPaginator)
-  paginator!: MatPaginator;
 
   @ViewChild('tagForm') tagForm: ProductCreateComponent | undefined;
 
-  ngAfterViewInit() {
-    this.showProductData();
-  }
+
   constructor(private productService: ProductService, private router: Router) {}
 
   @Input()
   error!: string | null;
   
   ngOnInit(): void {
-  }
-
-  showProductData() {
-    this.productService.getProductData().subscribe(
-      (productData) => {
-        console.log("get data");
-        ELEMENT_DATA = [];
-        for (const data of (productData as Product[])){
-          //console.log(data);
-          ELEMENT_DATA.push(
-            // {
-            //   name: data.name,
-            //   pid: data.pid,
-            //   country: data.country,
-            //   category: data.category
-            // }
-            data
-          )
-        }
-        this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-      },
-      (err) => {
-        console.log(err);
-        if (err.status == 401) {
-          this.router.navigate(['/auth']);
-        }
-        
-      }
-    );    
   }
 
   newProduct(form:any) {

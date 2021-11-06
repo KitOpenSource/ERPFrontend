@@ -11,6 +11,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthComponent } from './auth/auth.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductCreateComponent } from './product/product-create/product-create.component';
+import { ProductListComponent } from './product/product-list/product-list.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ProductCreateComponent } from './product/product-create/product-create.
     ProductComponent,
     DashboardComponent,
     AuthComponent,
-    ProductCreateComponent
+    ProductCreateComponent,
+    ProductListComponent
   ],
   imports: [
     BrowserModule,
