@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, DoCheck, AfterViewInit, OnChanges {
     else this.isLogin = true;
 
     if (this.isLogin) {
-      this.router.navigate(['/dashboard']);
+      //this.router.navigate(['/dashboard']);
     } else {
       this.router.navigate(['/auth']);
     }

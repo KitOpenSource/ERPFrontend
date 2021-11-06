@@ -49,6 +49,10 @@ export const MY_FORMATS = {
 })
 export class ProductCreateComponent implements OnInit {
 
+  @Input() error: string | null | undefined ;
+  @Input() success: string | null | undefined ;
+  @Output() submitEM = new EventEmitter();
+
   metals = [
     { value: 'gold', checked: false},
     { value: 'silver', checked: false},
@@ -143,20 +147,26 @@ export class ProductCreateComponent implements OnInit {
     );
   }
 
-  @Input() error: string | undefined ;
-  @Output() submitEM = new EventEmitter();
-
   ngOnInit(): void {
   }
 
   submit() {
     if (this.form.valid) {
       this.form.value.metal = [];
+      let metalVaild = false;
       this.metals.forEach(metal => {
-        if (metal.checked == true) this.form.value.metal.push(metal.value);
+        if (metal.checked == true) {
+          this.form.value.metal.push(metal.value);
+          metalVaild = true;
+        }
       });
+      if (!metalVaild) {
+        this.error = "Metal Required!";
+        return;
+      }
       this.form.value.year = (this.date.value as Moment).year();
-      console.log(this.tags);
+      this.form.value.tag = this.tags;
+      console.log(this.form.value);
       this.submitEM.emit(this.form.value);
     }
     

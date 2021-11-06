@@ -22,3 +22,17 @@
 .example-month-picker .mat-calendar-arrow {
   display: none;
 }
+
+.error {
+  padding: 16px;
+  width: 300px;
+  color: white;
+  background-color: red;
+}
+
+.success {
+  padding: 16px;
+  width: 300px;
+  color: white;
+  background-color: green;
+}
