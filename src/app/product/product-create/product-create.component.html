@@ -4,8 +4,9 @@
       <form [formGroup]="form" (ngSubmit)="submit()">
       <p>
           <mat-form-field>
-          <input required type="text" matInput placeholder="pid" formControlName="pid">
+            <input class="pidInput" readonly required type="text" matInput placeholder="pid" formControlName="pid">
           </mat-form-field>
+          <a style="color: blue;" (click)="genNewPid()">Gen New Pid</a>
       </p>
       <p>
         <mat-form-field class="example-full-width">

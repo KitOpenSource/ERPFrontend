@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ProductService } from '../product.service';
 
 const moment = _moment;
 
@@ -118,7 +119,7 @@ export class ProductCreateComponent implements OnInit {
   gross_weightControl = new FormControl('0',Validators.min(0));
   date = new FormControl(moment());
 
-  constructor() {
+  constructor(private productService: ProductService) {
     this.form = new FormGroup({
       pid: this.pidControl,
       name: this.nameControl,
@@ -242,6 +243,18 @@ export class ProductCreateComponent implements OnInit {
     const filterValue = value.toLowerCase();
 
     return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
+  }
+
+  genNewPid() {
+    this.productService.genNewPid().subscribe(
+      (newPid) => {
+        console.log(newPid);
+        this.pidControl.setValue(newPid);
+      },
+      (err) => {
+        this.error = "Unknow Error when gen new Pid";
+      }
+    );
   }
 }
 

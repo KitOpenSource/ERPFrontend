@@ -104,7 +104,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
           this.newError = 'unknow error';
         }
       }
-    )
-    
+    ) 
   }
+
 }
