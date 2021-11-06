@@ -12,6 +12,7 @@ import { AuthComponent } from './auth/auth.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductCreateComponent } from './product/product-create/product-create.component';
 import { ProductListComponent } from './product/product-list/product-list.component';
+import { MatTableFilterModule } from 'mat-table-filter';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ProductListComponent } from './product/product-list/product-list.compon
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableFilterModule
   ],
   providers: [],
   bootstrap: [AppComponent]

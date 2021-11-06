@@ -1,3 +1,10 @@
+<p>
+    <mat-form-field appearance="fill">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="doFilter($event)" placeholder="Search..." [formControl]="searchCtl">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+</p>
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
     <!-- pid Column -->

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -7,6 +8,8 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 
 var ELEMENT_DATA: Product[] = [];
+
+
 
 @Component({
   selector: 'app-product-list',
@@ -17,7 +20,8 @@ export class ProductListComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['pid', 'name', 'country', 'category', 'weight'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
-  
+  searchCtl = new FormControl('');
+
   @ViewChild(MatSort)
   sort!: MatSort;
 
@@ -33,13 +37,24 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     this.showProductData();
   }
 
+  doFilter(event: Event) {
+    this.dataSource.filter = this.searchCtl.value.trim().toLocaleLowerCase();
+  }
+
   showProductData() {
     this.productService.getProductData().subscribe(
       (productData) => {
         console.log("get data");
         ELEMENT_DATA = [];
-        for (const data of (productData as Product[])){
-          ELEMENT_DATA.push(data);
+        for (let data of (productData as Product[])){
+          let product = new Product();
+          product.pid = data.pid;
+          product.name = data.name;
+          product.country = data.country;
+          product.category = data.category;
+          product.gross_weight = data.gross_weight;
+
+          ELEMENT_DATA.push(product);
         }
         this.dataSource = new MatTableDataSource(ELEMENT_DATA);
         this.dataSource.sort = this.sort;
