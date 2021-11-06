@@ -47,8 +47,8 @@
                         panelClass="example-month-picker">
         </mat-datepicker>
       </mat-form-field>
-      <mat-divider></mat-divider>
-      <p>Metals</p>
+
+      <p>Metals*</p>
       <section class="example-section">
           <span class="example-list-section">
                 <mat-checkbox class="example-margin" *ngFor="let metal of metals" [name]="metal.value" [checked]="metal.checked" (change)="updateMetals($event)">
@@ -56,6 +56,10 @@
                 </mat-checkbox>
           </span>
       </section>
+      <div>
+        <mat-divider></mat-divider>
+      </div>
+      <br>
       <p>
           <mat-form-field>
               <mat-label>Au Weight</mat-label>
@@ -84,8 +88,8 @@
           <mat-form-field>
               <mat-label>Gross Weight</mat-label>
               <input type="number" matInput placeholder="gross_weight" formControlName="gross_weight" min="0">
-              <span matSuffix>oz</span>
-              <mat-error *ngIf="thicknessControl.invalid">Min: 0 oz</mat-error>
+              <span matSuffix>g</span>
+              <mat-error *ngIf="thicknessControl.invalid">Min: 0 g</mat-error>
           </mat-form-field>
       </p>
       <p>
@@ -131,6 +135,36 @@
           <mat-form-field>
               <input type="text" matInput placeholder="Finish" formControlName="finish">
           </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="example-chip-list" appearance="fill">
+          <mat-label>Favorite Tag</mat-label>
+          <mat-chip-list #chipList aria-label="Tag selection">
+            <mat-chip
+              *ngFor="let tag of tags"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="remove(tag)">
+              {{tag}}
+              <button matChipRemove *ngIf="removable">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+            <input
+              placeholder="New tag..."
+              #tagInput
+              [formControl]="tagCtrl"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="add($event)">
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+              {{tag}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
       </p>
       <p *ngIf="error" class="error">
           {{ error }}

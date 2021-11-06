@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
@@ -7,6 +7,12 @@ import {MatDatepicker} from '@angular/material/datepicker';
 import * as _moment from 'moment';
 // tslint:disable-next-line:no-duplicate-imports
 import {Moment} from 'moment';
+
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { Observable } from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 const moment = _moment;
 
@@ -130,6 +136,11 @@ export class ProductCreateComponent implements OnInit {
       gross_weight: this.gross_weightControl,
       date: this.date
     });
+
+    this.filteredTags = this.tagCtrl.valueChanges.pipe(
+      startWith(null),
+      map((fruit: string | null) => (fruit ? this._filter(fruit) : this.allTags.slice())),
+    );
   }
 
   @Input() error: string | undefined ;
@@ -145,6 +156,7 @@ export class ProductCreateComponent implements OnInit {
         if (metal.checked == true) this.form.value.metal.push(metal.value);
       });
       this.form.value.year = (this.date.value as Moment).year();
+      console.log(this.tags);
       this.submitEM.emit(this.form.value);
     }
     
@@ -176,6 +188,50 @@ export class ProductCreateComponent implements OnInit {
     this.date.setValue(ctrlValue);
     console.log((ctrlValue as Moment).year());
     datepicker.close();
+  }
+
+  selectable = true;
+  removable = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  tagCtrl = new FormControl();
+  filteredTags: Observable<string[]> | undefined;
+  tags: string[] = [];
+  allTags: string[] = ['queen', 'animal', 'lunar', 'christmas', 'love'];
+
+  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
+ 
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.tags.push(value.toLocaleLowerCase());
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+
+    this.tagCtrl.setValue(null);
+  }
+
+  remove(fruit: string): void {
+    const index = this.tags.indexOf(fruit);
+
+    if (index >= 0) {
+      this.tags.splice(index, 1);
+    }
+  }
+  
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.tags.push(event.option.viewValue);
+    this.tagInput!.nativeElement.value = '';
+    this.tagCtrl.setValue(null);
+  }
+  
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 }
 
