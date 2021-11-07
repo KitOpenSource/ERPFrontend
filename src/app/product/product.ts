@@ -1,4 +1,5 @@
 export class Product {
+    _id!: string
     pid!: string
     name!: string
     cname!: string
@@ -18,4 +19,6 @@ export class Product {
     weight_pd!: number
     gross_weight!: number
     year!: number
+    tag!: string[]
+    metal!: string[]
 }

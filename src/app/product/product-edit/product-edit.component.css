@@ -1,0 +1,43 @@
+.example-full-width {
+    width: 100%;
+  }
+  
+  .example-section {
+    margin: 12px 0;
+  }
+  
+  .example-margin {
+    margin: 0 12px;
+  }
+  
+  .mat-form-field {
+    margin-right: 24px;
+  }
+  
+  
+  .example-month-picker .mat-calendar-period-button {
+    pointer-events: none;
+  }
+  
+  .example-month-picker .mat-calendar-arrow {
+    display: none;
+  }
+  
+  .error {
+    padding: 16px;
+    width: 300px;
+    color: white;
+    background-color: red;
+  }
+  
+  .success {
+    padding: 16px;
+    width: 300px;
+    color: white;
+    background-color: green;
+  }
+  
+  .pidInput {
+    color:white;
+    background: grey;
+  }

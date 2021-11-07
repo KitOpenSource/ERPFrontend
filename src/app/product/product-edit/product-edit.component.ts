@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
@@ -18,9 +18,6 @@ import { Product } from '../product';
 import { Router } from '@angular/router';
 
 const moment = _moment;
-
-// See the Moment.js docs for the meaning of these formats:
-// https://momentjs.com/docs/#/displaying/format/
 export const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY',
@@ -34,9 +31,9 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'app-product-create',
-  templateUrl: './product-create.component.html',
-  styleUrls: ['./product-create.component.css'],
+  selector: 'app-product-edit',
+  templateUrl: './product-edit.component.html',
+  styleUrls: ['./product-edit.component.css'],
   providers: [
     // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
     // application's root module. We provide it at the component level here, due to limitations of
@@ -50,12 +47,13 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ]
 })
-export class ProductCreateComponent implements OnInit {
+export class ProductEditComponent implements OnInit, OnChanges {
 
   @Input() error: string | null | undefined ;
   @Input() success: string | null | undefined ;
-  @Output() submitEM = new EventEmitter();
+  @Input() editProduct: Product | undefined;
 
+  @Output() editSubmitEM = new EventEmitter();
   metals = [
     { value: 'gold', checked: false},
     { value: 'silver', checked: false},
@@ -100,7 +98,7 @@ export class ProductCreateComponent implements OnInit {
     'Other'
   ];
 
-  form: FormGroup;
+  editForm: FormGroup;
   pidControl = new FormControl('');
   nameControl = new FormControl('');
   cnameControl = new FormControl('');
@@ -121,8 +119,8 @@ export class ProductCreateComponent implements OnInit {
   gross_weightControl = new FormControl('0',Validators.min(0));
   date = new FormControl(moment());
 
-  constructor(private productService: ProductService, private router: Router) {
-    this.form = new FormGroup({
+  constructor(private productService: ProductService, private router: Router) { 
+    this.editForm = new FormGroup({
       pid: this.pidControl,
       name: this.nameControl,
       cname: this.cnameControl,
@@ -149,17 +147,49 @@ export class ProductCreateComponent implements OnInit {
       map((fruit: string | null) => (fruit ? this._filter(fruit) : this.allTags.slice())),
     );
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.pidControl.setValue(this.editProduct?.pid);
+    this.nameControl.setValue(this.editProduct?.name);
+    this.cnameControl.setValue(this.editProduct?.cname);
+    this.categoryControl.setValue(this.editProduct?.category);
+    this.subcategoryControl.setValue(this.editProduct?.subcategory);
+    this.countryControl.setValue(this.editProduct?.country);
+    this.denominationControl.setValue(this.editProduct?.denomination);
+    this.manufacturerControl.setValue(this.editProduct?.manufacturer);
+    this.mintageControl.setValue(this.editProduct?.mintage);
+    this.diameterControl.setValue(this.editProduct?.diameter);
+    this.thicknessControl.setValue(this.editProduct?.thickness);
+    this.purityControl.setValue(this.editProduct?.purity);
+    this.finishControl.setValue(this.editProduct?.finish);
+    this.weight_auControl.setValue(this.editProduct?.weight_au);
+    this.weight_agControl.setValue(this.editProduct?.weight_ag);
+    this.weight_ptControl.setValue(this.editProduct?.weight_pt);
+    this.weight_pdControl.setValue(this.editProduct?.weight_pd);
+    this.gross_weightControl.setValue(this.editProduct?.gross_weight);
+    this.date.setValue(moment(this.editProduct?.year.toString()));
+    this.tags = [];
+    this.editProduct?.tag.forEach(tag => {
+      this.tags.push(tag);
+    });
+    this.editProduct?.metal.forEach(selectMetal => {
+      this.metals.forEach(metal => {
+        if (metal.value == selectMetal) {
+          metal.checked = true;
+        }
+      })
+    });
+  }
 
   ngOnInit(): void {
   }
 
-  submit() {
-    if (this.form.valid) {
-      this.form.value.metal = [];
+  editSubmit() {
+    if (this.editForm.valid) {
+      this.editForm.value.metal = [];
       let metalVaild = false;
       this.metals.forEach(metal => {
         if (metal.checked == true) {
-          this.form.value.metal.push(metal.value);
+          this.editForm.value.metal.push(metal.value);
           metalVaild = true;
         }
       });
@@ -167,12 +197,12 @@ export class ProductCreateComponent implements OnInit {
         this.error = "Metal Required!";
         return;
       }
-      this.form.value.year = (this.date.value as Moment).year();
-      this.form.value.tag = this.tags;
-      console.log(this.form.value);
-      this.submitEM.emit(this.form.value);
+      this.editForm.value.year = (this.date.value as Moment).year();
+      this.editForm.value.tag = this.tags;
+      this.editForm.value._id = this.editProduct?._id;
+      console.log(this.editForm.value);
+      this.editSubmitEM.emit(this.editForm.value);
     }
-    
   }
 
   updateMetals(box:any) {
@@ -247,121 +277,4 @@ export class ProductCreateComponent implements OnInit {
     return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 
-  genNewPid() {
-    this.productService.genNewPid().subscribe(
-      (newPid) => {
-        console.log(newPid);
-        this.pidControl.setValue(newPid);
-      },
-      (err) => {
-        this.error = "Unknow Error when gen new Pid";
-      }
-    );
-  }
-
-  public records: any[] = [];
-  @ViewChild('csvReader') csvReader: any;
-
-  uploadListener($event: any): void {
-    let text = [];
-    let files = $event.srcElement.files;
-    if (this.isValidCSVFile(files[0])) {
-      let input = $event.target;
-      let reader = new FileReader();
-      reader.readAsText(input.files[0]);
-      reader.onload = () => {
-        let csvData = reader.result;
-        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
-        let headersRow = this.getHeaderArray(csvRecordsArray);
-        this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
-      };
-      reader.onerror = function () {
-        console.log('error is occured while reading file!');
-      };
-    } else {
-      alert("Please import valid .csv file.");
-      this.fileReset();
-    }
-  }
-
-  getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {
-    let csvArr = [];
-    for (let i = 1; i < csvRecordsArray.length; i++) {
-      let curruntRecord = (<string>csvRecordsArray[i]).split(',');
-      if (curruntRecord.length == headerLength) {
-        let csvRecord: Product = new Product();
-        csvRecord.pid = curruntRecord[15].trim();
-        csvRecord.name = curruntRecord[14].trim();
-        csvRecord.cname = curruntRecord[4].trim();
-        csvRecord.category = curruntRecord[3].trim();
-        csvRecord.subcategory = curruntRecord[20].trim();
-        csvRecord.country = curruntRecord[5].trim();
-        csvRecord.denomination = curruntRecord[6].trim();
-        csvRecord.manufacturer = curruntRecord[11].trim();
-        csvRecord.mintage = Number(curruntRecord[13].trim());
-        csvRecord.diameter = curruntRecord[7].trim();
-        csvRecord.thickness = Number(curruntRecord[22].trim());
-        csvRecord.purity = curruntRecord[18].trim();
-        csvRecord.finish = curruntRecord[8].trim();
-        csvRecord.weight_au = Number(curruntRecord[24].trim());
-        csvRecord.weight_ag = Number(curruntRecord[23].trim());
-        csvRecord.weight_pt = Number(curruntRecord[26].trim());
-        csvRecord.weight_pd = Number(curruntRecord[25].trim());
-        csvRecord.gross_weight = Number(curruntRecord[9].trim());
-        csvRecord.year = Number(curruntRecord[27].trim());
-        csvRecord.tag = curruntRecord[21].trim().replace("[","").replace("]","").split('|');
-        csvRecord.metal = curruntRecord[12].trim().replace("[","").replace("]","").split('|');
-        // csvRecord.tag = curruntRecord[21].trim().replace("[","").replace("]","").split(',');
-
-        // csvRecord.id = curruntRecord[0].trim();
-        // csvRecord.firstName = curruntRecord[1].trim();
-        // csvRecord.lastName = curruntRecord[2].trim();
-        // csvRecord.age = curruntRecord[3].trim();
-        // csvRecord.position = curruntRecord[4].trim();
-        // csvRecord.mobile = curruntRecord[5].trim();
-        csvArr.push(csvRecord);
-      }
-    }
-    // console.log(csvArr);
-    return csvArr;
-  }
-
-  isValidCSVFile(file: any) {
-    return file.name.endsWith(".csv");
-  }
-
-  getHeaderArray(csvRecordsArr: any) {
-    let headers = (<string>csvRecordsArr[0]).split(',');
-    let headerArray = [];
-    for (let j = 0; j < headers.length; j++) {
-      headerArray.push(headers[j]);
-    }
-    return headerArray;
-  }
-
-  fileReset() {
-    this.csvReader.nativeElement.value = "";
-    this.records = [];
-  }
-
-  newMultiProduct() {
-    console.log(this.records);
-    if (this.csvReader.nativeElement.value == '') {
-      alert("Please import valid .csv file.");
-      return;
-    } 
-    this.productService.newMultiProduct(this.records).subscribe(
-      (products) => {
-        alert("批量新增成功");
-        let currentUrl = this.router.url;
-        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-        this.router.navigate([currentUrl]);
-        });
-      },
-      (err) => {
-        this.error = "Unknow Error";
-      }
-    );
-  }
 }
-

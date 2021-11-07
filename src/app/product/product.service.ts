@@ -7,11 +7,13 @@ import { Product } from './product';
 })
 export class ProductService {
 
-  baseUrl = 'http://localhost:3000';
-  getProductsUrl = 'http://localhost:3000/products';
-  newProuctUrl = this.baseUrl + '/products';
-  newMultiProuctUrl = this.baseUrl + '/products/multi'
-  genNewPidUrl = this.baseUrl + '/products/newpid';
+  baseUrl = 'http://localhost:3000/';
+  getProductsUrl = this.baseUrl + 'products';
+  newProuctUrl = this.baseUrl + 'products';
+  newMultiProuctUrl = this.baseUrl + 'products/multi'
+  genNewPidUrl = this.baseUrl + 'products/newpid';
+  getOneProductUrl = this.baseUrl + 'products/'
+  editProuctUrl = this.baseUrl + 'products/';
 
   constructor(private http:HttpClient) { }
 
@@ -24,6 +26,17 @@ export class ProductService {
     };
 
     return this.http.get(this.getProductsUrl, requestOptions);
+  }
+
+  getOneProductData(id: string){
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+      headers: new HttpHeaders({
+        Authorization: "Bearer " + token
+      })
+    };
+
+    return this.http.get(this.getOneProductUrl+id, requestOptions);
   }
 
   newProductData(form:any){
@@ -48,6 +61,18 @@ export class ProductService {
     };
 
     return this.http.post(this.newMultiProuctUrl, products, requestOptions);
+  }
+
+  editProductData(form:any) {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+      headers: new HttpHeaders({
+        Authorization: "Bearer " + token,
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.put(this.editProuctUrl+form._id, form, requestOptions);
   }
 
   genNewPid() {

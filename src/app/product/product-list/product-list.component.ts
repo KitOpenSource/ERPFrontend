@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -18,9 +18,11 @@ var ELEMENT_DATA: Product[] = [];
 })
 export class ProductListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['pid', 'name', 'country', 'category', 'weight'];
+  displayedColumns: string[] = ['pid', 'name', 'country', 'category', 'weight', 'info'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   searchCtl = new FormControl('');
+
+  @Output() editEM = new EventEmitter<Product>();
 
   @ViewChild(MatSort)
   sort!: MatSort;
@@ -48,6 +50,7 @@ export class ProductListComponent implements OnInit, AfterViewInit {
         ELEMENT_DATA = [];
         for (let data of (productData as Product[])){
           let product = new Product();
+          product._id = data._id;
           product.pid = data.pid;
           product.name = data.name;
           product.country = data.country;
@@ -70,4 +73,7 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     );    
   }
 
+  edit(product:Product) {
+    this.editEM.emit(product);
+  }
 }

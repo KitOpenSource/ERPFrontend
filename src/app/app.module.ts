@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductCreateComponent } from './product/product-create/product-create.component';
 import { ProductListComponent } from './product/product-list/product-list.component';
 import { MatTableFilterModule } from 'mat-table-filter';
+import { ProductEditComponent } from './product/product-edit/product-edit.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { MatTableFilterModule } from 'mat-table-filter';
     DashboardComponent,
     AuthComponent,
     ProductCreateComponent,
-    ProductListComponent
+    ProductListComponent,
+    ProductEditComponent
   ],
   imports: [
     BrowserModule,
