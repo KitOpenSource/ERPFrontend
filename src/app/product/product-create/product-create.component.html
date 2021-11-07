@@ -1,6 +1,13 @@
 <mat-card class="product-create-card">
   <mat-card-title>New Product</mat-card-title>
   <mat-card-content>
+      <mat-divider></mat-divider>
+      <br>
+      <div>上傳CSV ...<input type="file" #csvReader name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
+      <button mat-stroked-button color="primary" (click)="newMultiProduct()">批量新增</button>
+      </div>
+      <br>
+      <mat-divider></mat-divider>
       <form [formGroup]="form" (ngSubmit)="submit()">
       <p>
           <mat-form-field>

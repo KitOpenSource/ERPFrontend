@@ -10,6 +10,7 @@ export class ProductService {
   baseUrl = 'http://localhost:3000';
   getProductsUrl = 'http://localhost:3000/products';
   newProuctUrl = this.baseUrl + '/products';
+  newMultiProuctUrl = this.baseUrl + '/products/multi'
   genNewPidUrl = this.baseUrl + '/products/newpid';
 
   constructor(private http:HttpClient) { }
@@ -35,6 +36,18 @@ export class ProductService {
     };
 
     return this.http.post(this.newProuctUrl, form, requestOptions);
+  }
+
+  newMultiProduct(products:any) {
+    const token = localStorage.getItem('token');
+    const requestOptions = {
+      headers: new HttpHeaders({
+        Authorization: "Bearer " + token,
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.post(this.newMultiProuctUrl, products, requestOptions);
   }
 
   genNewPid() {

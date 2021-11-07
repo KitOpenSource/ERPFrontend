@@ -48,8 +48,8 @@ export class ProductComponent implements OnInit {
         this.newSuccess = 'New product success';
         let currentUrl = this.router.url;
         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-        this.router.navigate([currentUrl]);
-    });
+          this.router.navigate([currentUrl]);
+        });
       },
       (err) => {
         console.log(err);

@@ -14,6 +14,8 @@ import {map, startWith} from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ProductService } from '../product.service';
+import { Product } from '../product';
+import { Router } from '@angular/router';
 
 const moment = _moment;
 
@@ -119,7 +121,7 @@ export class ProductCreateComponent implements OnInit {
   gross_weightControl = new FormControl('0',Validators.min(0));
   date = new FormControl(moment());
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private router: Router) {
     this.form = new FormGroup({
       pid: this.pidControl,
       name: this.nameControl,
@@ -253,6 +255,103 @@ export class ProductCreateComponent implements OnInit {
       },
       (err) => {
         this.error = "Unknow Error when gen new Pid";
+      }
+    );
+  }
+
+  public records: any[] = [];
+  @ViewChild('csvReader') csvReader: any;
+
+  uploadListener($event: any): void {
+    let text = [];
+    let files = $event.srcElement.files;
+    if (this.isValidCSVFile(files[0])) {
+      let input = $event.target;
+      let reader = new FileReader();
+      reader.readAsText(input.files[0]);
+      reader.onload = () => {
+        let csvData = reader.result;
+        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+        let headersRow = this.getHeaderArray(csvRecordsArray);
+        this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
+      };
+      reader.onerror = function () {
+        console.log('error is occured while reading file!');
+      };
+    } else {
+      alert("Please import valid .csv file.");
+      this.fileReset();
+    }
+  }
+
+  getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {
+    let csvArr = [];
+    for (let i = 1; i < csvRecordsArray.length; i++) {
+      let curruntRecord = (<string>csvRecordsArray[i]).split(',');
+      if (curruntRecord.length == headerLength) {
+        let csvRecord: Product = new Product();
+        csvRecord.pid = curruntRecord[15].trim();
+        csvRecord.name = curruntRecord[14].trim();
+        csvRecord.cname = curruntRecord[4].trim();
+        csvRecord.category = curruntRecord[3].trim();
+        csvRecord.subcategory = curruntRecord[20].trim();
+        csvRecord.country = curruntRecord[5].trim();
+        csvRecord.denomination = curruntRecord[6].trim();
+        csvRecord.manufacturer = curruntRecord[11].trim();
+        csvRecord.mintage = Number(curruntRecord[13].trim());
+        csvRecord.diameter = curruntRecord[7].trim();
+        csvRecord.thickness = Number(curruntRecord[22].trim());
+        csvRecord.purity = curruntRecord[18].trim();
+        csvRecord.finish = curruntRecord[8].trim();
+        csvRecord.weight_au = Number(curruntRecord[24].trim());
+        csvRecord.weight_ag = Number(curruntRecord[23].trim());
+        csvRecord.weight_pt = Number(curruntRecord[26].trim());
+        csvRecord.weight_pd = Number(curruntRecord[25].trim());
+        csvRecord.gross_weight = Number(curruntRecord[9].trim());
+        csvRecord.year = Number(curruntRecord[27].trim());
+        // csvRecord.id = curruntRecord[0].trim();
+        // csvRecord.firstName = curruntRecord[1].trim();
+        // csvRecord.lastName = curruntRecord[2].trim();
+        // csvRecord.age = curruntRecord[3].trim();
+        // csvRecord.position = curruntRecord[4].trim();
+        // csvRecord.mobile = curruntRecord[5].trim();
+        csvArr.push(csvRecord);
+      }
+    }
+    // console.log(csvArr);
+    return csvArr;
+  }
+
+  isValidCSVFile(file: any) {
+    return file.name.endsWith(".csv");
+  }
+
+  getHeaderArray(csvRecordsArr: any) {
+    let headers = (<string>csvRecordsArr[0]).split(',');
+    let headerArray = [];
+    for (let j = 0; j < headers.length; j++) {
+      headerArray.push(headers[j]);
+    }
+    return headerArray;
+  }
+
+  fileReset() {
+    this.csvReader.nativeElement.value = "";
+    this.records = [];
+  }
+
+  newMultiProduct() {
+    console.log(this.records);
+    this.productService.newMultiProduct(this.records).subscribe(
+      (products) => {
+        alert("批量新增成功");
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate([currentUrl]);
+        });
+      },
+      (err) => {
+        this.error = "Unknow Error";
       }
     );
   }
