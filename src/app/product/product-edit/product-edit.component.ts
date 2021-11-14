@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
@@ -16,6 +16,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ProductService } from '../product.service';
 import { Product } from '../product';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 const moment = _moment;
 export const MY_FORMATS = {
@@ -48,6 +49,11 @@ export const MY_FORMATS = {
   ]
 })
 export class ProductEditComponent implements OnInit, OnChanges {
+
+  @ViewChild('UploadFileInput', { static: false })
+  uploadFileInput!: ElementRef;
+  fileUploadForm!: FormGroup;
+  fileInputLabel!: string;
 
   @Input() error: string | null | undefined ;
   @Input() success: string | null | undefined ;
@@ -119,7 +125,10 @@ export class ProductEditComponent implements OnInit, OnChanges {
   gross_weightControl = new FormControl('0',Validators.min(0));
   date = new FormControl(moment());
 
-  constructor(private productService: ProductService, private router: Router) { 
+  constructor(private productService: ProductService, 
+              private router: Router,
+              private formBuilder: FormBuilder,
+              private http: HttpClient) { 
     this.editForm = new FormGroup({
       pid: this.pidControl,
       name: this.nameControl,
@@ -181,6 +190,9 @@ export class ProductEditComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.fileUploadForm = this.formBuilder.group({
+      uploadedImage: ['']
+    });
   }
 
   editSubmit() {
@@ -277,4 +289,33 @@ export class ProductEditComponent implements OnInit, OnChanges {
     return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 
+  onFileSelect(event:any) {
+    const file = event.target.files[0];
+    this.fileInputLabel = file.name;
+    this.fileUploadForm.get('uploadedImage')!.setValue(file);
+  }
+
+  onFormSubmit(): void {
+
+    if (!this.fileUploadForm.get('uploadedImage')!.value) {
+      alert('Please fill valid details!');
+    }
+
+    const formData = new FormData();
+    formData.append('uploadedImage', this.fileUploadForm.get('uploadedImage')!.value);
+    formData.append('agentId', '007');
+
+
+    this.http
+      .post<any>(`http://localhost:3000/products/${this.editProduct?._id}/uploadfile`, formData).subscribe(response => {
+        console.log(response);
+        this.editProduct = response as Product;
+        this.uploadFileInput.nativeElement.value = "";
+        this.fileInputLabel = '';
+        
+      }, er => {
+        console.log(er);
+        alert(er.error.error);
+      });
+  }
 }

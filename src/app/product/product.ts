@@ -1,6 +1,7 @@
 export class Product {
     _id!: string
     pid!: string
+    imgUrl!: string
     name!: string
     cname!: string
     category!: string

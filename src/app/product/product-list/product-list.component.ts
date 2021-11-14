@@ -74,6 +74,7 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   }
 
   edit(product:Product) {
+    console.log(product);
     this.editEM.emit(product);
   }
 }
