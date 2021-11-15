@@ -14,6 +14,7 @@ import { ProductCreateComponent } from './product/product-create/product-create.
 import { ProductListComponent } from './product/product-list/product-list.component';
 import { MatTableFilterModule } from 'mat-table-filter';
 import { ProductEditComponent } from './product/product-edit/product-edit.component';
+import { PreorderComponent } from './preorder/preorder.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ProductEditComponent } from './product/product-edit/product-edit.compon
     AuthComponent,
     ProductCreateComponent,
     ProductListComponent,
-    ProductEditComponent
+    ProductEditComponent,
+    PreorderComponent
   ],
   imports: [
     BrowserModule,

@@ -328,9 +328,9 @@
   <mat-sidenav-container class="example-container">
     <mat-sidenav #sidenav mode="side" opened class="example-sidenav">
       <mat-nav-list>
-        <a mat-list-item routerLink="dashboard" >Dashboard</a>
-        <a mat-list-item routerLink="." >Transaction</a>
-        <a mat-list-item routerLink="product" >Product</a>
+        <a mat-list-item *ngIf="isLogin" routerLink="dashboard" >Dashboard</a>
+        <a mat-list-item *ngIf="isLogin" routerLink="preorder" >Preorder</a>
+        <a mat-list-item *ngIf="isLogin" routerLink="product" >Product</a>
         <a mat-list-item *ngIf="!isLogin" routerLink="auth" >Authroization</a>
       </mat-nav-list>
     </mat-sidenav>
