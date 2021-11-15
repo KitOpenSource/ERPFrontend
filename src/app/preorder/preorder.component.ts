@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PreorderComponent implements OnInit {
 
+  selectedIndex: number | undefined;
+
   constructor() { }
 
   ngOnInit(): void {

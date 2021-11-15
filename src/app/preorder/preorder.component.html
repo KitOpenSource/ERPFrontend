@@ -1,1 +1,8 @@
-<p>preorder works!</p>
+<mat-tab-group animationDuration="0ms" dynamicHeight [(selectedIndex)]="selectedIndex">
+  <mat-tab label="Preorder List">
+    <app-preorder-list>Loading</app-preorder-list>
+  </mat-tab>
+  <mat-tab label="New Preorder">
+    <app-preorder-create>Loading</app-preorder-create>  
+  </mat-tab>
+</mat-tab-group>
